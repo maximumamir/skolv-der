@@ -1,0 +1,177 @@
+:root{
+  --bg: linear-gradient(180deg, #cfe9ff, #eaf6ff);
+  --card-bg: rgba(0,0,0,0.55);
+  --text:#fff;
+}
+
+*{ box-sizing:border-box }
+
+body{
+  margin:0;
+  min-height:100vh;
+  font-family:"Segoe UI", Arial, sans-serif;
+  color:var(--text);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  padding:28px;
+  background: var(--bg);
+}
+
+/* HEADER */
+#main-header{
+  width:100%;
+  display:flex;
+  justify-content:center;
+  margin-bottom:24px;
+}
+
+#header-box{
+  background: rgba(0,0,0,0.45);
+  padding:14px 24px;
+  border-radius:14px;
+  text-align:center;
+}
+
+#header-box h1{
+  margin:0 0 6px;
+  font-size:1.9rem;
+}
+
+#updated{ font-size:1.05rem }
+
+/* CREDIT */
+.credit{
+  position: fixed;
+  top: 14px;
+  right: 14px;
+  background: rgba(0,0,0,0.6);
+  padding: 8px 14px;
+  border-radius: 10px;
+  font-size: 0.75rem;
+}
+
+/* GRID */
+.grid{
+  display:grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap:22px;
+  width:100%;
+  max-width:1650px;
+}
+
+.card{
+  padding:32px;
+  background:var(--card-bg);
+  border-radius:26px;
+  text-align:center;
+}
+
+/* DAG + DATUM */
+.day{
+  display:inline-block;
+  font-size:1.35rem;
+  font-weight:600;
+  padding:6px 12px;
+  border-radius:10px;
+  background:rgba(255,255,255,0.15);
+  margin-bottom:16px;
+  text-transform:capitalize;
+}
+
+.day.today{
+  background:rgba(255,255,255,0.25);
+}
+
+.icon{ width:120px }
+
+.temp{
+  font-size:2.2rem;
+  font-weight:700;
+}
+
+.desc{ font-size:1.2rem }
+
+/* REGN */
+#rain-warning{
+  margin-top:36px;
+  display:none;
+  align-items:center;
+  gap:36px;
+}
+
+.rain-text{
+  font-size:2.6rem;
+  font-weight:900;
+  background: rgba(0,0,0,0.75);
+  padding:20px 34px;
+  border-radius:20px;
+}
+
+.umbrella{ width:120px }
+.umbrella.left{ transform:scaleX(-1) }
+
+/* MIKU */
+.miku{
+  position:fixed;
+  bottom:18px;
+  z-index:10;
+  display:flex;
+  flex-direction:column-reverse;
+  align-items:center;
+  pointer-events:none;
+  opacity:0;
+  transition:opacity 0.4s;
+}
+
+.miku-left{ left:36px }
+.miku-right{ right:36px }
+
+.miku img{ width:180px }
+
+.miku .speech{
+  background: rgba(0,0,0,0.8);
+  padding:10px 16px;
+  border-radius:16px;
+  margin-bottom:10px;
+  font-size:1.1rem;
+  opacity:0;
+  transition:opacity 0.4s;
+  white-space:nowrap;
+}
+
+.miku.show{ opacity:1 }
+.miku.show .speech{ opacity:1 }
+/* ===== STORA SKÄRMAR (skol-displayer) ===== */
+@media (min-width: 1800px) {
+
+  .grid{
+    max-width:1800px;
+  }
+
+  .day{
+    font-size:1.6rem;
+  }
+
+  .temp{
+    font-size:2.6rem;
+  }
+
+  .desc{
+    font-size:1.4rem;
+  }
+
+  .icon{
+    width:135px;
+  }
+
+  /* MIKU */
+  .miku img{
+    width:400px;
+  }
+
+  .miku .speech{
+    font-size:1.4rem;
+    padding:20px 32px;
+  }
+}

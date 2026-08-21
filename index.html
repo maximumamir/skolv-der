@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Skolväder</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+<header id="main-header">
+  <div id="header-box">
+    <h1>Väder i Stockholm</h1>
+    <p id="updated">--:--</p>
+  </div>
+  <div class="credit">
+    Skapad av Amir Rezai (TE23A)<br>
+    Discord: maximum_amir
+  </div>
+</header>
+
+<main>
+
+  <!-- Prognoser -->
+  <section id="week-forecast" class="grid"></section>
+
+  <!-- REGN-VARNING -->
+  <div id="rain-warning">
+    <img src="Väderläget/paraply vänster.png" class="umbrella left">
+    <div class="rain-text">TA MED PARAPLY!</div>
+    <img src="Väderläget/paraply höger.png" class="umbrella right">
+  </div>
+
+  <!-- MIKU -->
+  <div class="miku miku-left">
+    <img src="Väderläget/miku pratar.png">
+    <div class="speech">Kolla vädret!</div>
+  </div>
+
+  <div class="miku miku-right">
+    <img src="Väderläget/miku pratar 2.png">
+    <div class="speech">Sommaren kommer snart!</div>
+  </div>
+
+</main>
+
+<script src="script.js"></script>
+</body>
+</html>
