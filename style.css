@@ -1,177 +1,364 @@
-:root{
-  --bg: linear-gradient(180deg, #cfe9ff, #eaf6ff);
-  --card-bg: rgba(0,0,0,0.55);
-  --text:#fff;
+:root {
+  --bg: linear-gradient(180deg, #777777, #a6a6a6);
+  --card-bg: rgba(35, 35, 35, 0.88);
+  --text: #ffffff;
+  --accent: #bdeaff;
 }
 
-*{ box-sizing:border-box }
+* {
+  box-sizing: border-box;
+}
 
-body{
-  margin:0;
-  min-height:100vh;
-  font-family:"Segoe UI", Arial, sans-serif;
-  color:var(--text);
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  padding:28px;
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: Arial, Helvetica, sans-serif;
+  color: var(--text);
   background: var(--bg);
+  overflow-x: hidden;
 }
 
 /* HEADER */
-#main-header{
-  width:100%;
-  display:flex;
-  justify-content:center;
-  margin-bottom:24px;
+
+#main-header {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 145px;
+  padding: 20px;
+  background: rgba(35, 35, 35, 0.85);
+  border-bottom: 2px solid rgba(255, 255, 255, 0.15);
+  z-index: 10;
 }
 
-#header-box{
-  background: rgba(0,0,0,0.45);
-  padding:14px 24px;
-  border-radius:14px;
-  text-align:center;
+#header-box {
+  text-align: center;
 }
 
-#header-box h1{
-  margin:0 0 6px;
-  font-size:1.9rem;
+#header-box h1 {
+  margin: 0 0 10px;
+  font-size: clamp(28px, 4vw, 44px);
+  color: white;
 }
 
-#updated{ font-size:1.05rem }
+#updated {
+  margin: 0;
+  font-size: 17px;
+  color: #dddddd;
+}
 
-/* CREDIT */
-.credit{
+/* SKAPARINFORMATION */
+
+.credit {
+  position: absolute;
+  right: 20px;
+  bottom: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+  font-size: 12px;
+  line-height: 1.4;
+  z-index: 12;
+}
+
+.credit-name,
+.credit-discord {
+  padding: 5px 10px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 0 2px 7px rgba(0, 0, 0, 0.2);
+}
+
+.credit-name strong {
+  color: #ffe28a;
+  font-size: 13px;
+}
+
+.credit-discord strong {
+  color: #a9d5ff;
+  font-size: 13px;
+}
+
+/* HUVUDINNEHÅLL */
+
+main {
+  position: relative;
+  min-height: calc(100vh - 145px);
+  padding: 35px 20px 250px;
+  overflow: hidden;
+}
+
+/* VÄDERKORT */
+
+.grid {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 18px;
+  width: min(1100px, 90%);
+  margin: 30px auto;
+}
+
+.card {
+  min-height: 230px;
+  padding: 22px 12px;
+  text-align: center;
+  background: var(--card-bg);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 18px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+}
+
+.day {
+  min-height: 40px;
+  font-size: 17px;
+  font-weight: bold;
+  text-transform: capitalize;
+}
+
+.day.today {
+  color: var(--accent);
+}
+
+.icon {
+  display: block;
+  width: 75px;
+  height: 75px;
+  object-fit: contain;
+  margin: 12px auto;
+}
+
+.temp {
+  margin-top: 8px;
+  font-size: 30px;
+  font-weight: bold;
+}
+
+.desc {
+  margin-top: 8px;
+  font-size: 16px;
+  color: #dddddd;
+}
+
+/* SNÖEFFEKT */
+
+#snow-layer {
   position: fixed;
-  top: 14px;
-  right: 14px;
-  background: rgba(0,0,0,0.6);
-  padding: 8px 14px;
-  border-radius: 10px;
-  font-size: 0.75rem;
+  inset: 0;
+  display: none;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 5;
 }
 
-/* GRID */
-.grid{
-  display:grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap:22px;
-  width:100%;
-  max-width:1650px;
+.snowflake {
+  position: absolute;
+  top: -30px;
+  color: white;
+  user-select: none;
+  pointer-events: none;
+  animation-name: snowfall;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  text-shadow: 0 0 5px rgba(255, 255, 255, 0.7);
 }
 
-.card{
-  padding:32px;
-  background:var(--card-bg);
-  border-radius:26px;
-  text-align:center;
+@keyframes snowfall {
+  0% {
+    transform: translateY(-30px) rotate(0deg);
+  }
+
+  100% {
+    transform: translateY(110vh) rotate(360deg);
+  }
 }
 
-/* DAG + DATUM */
-.day{
-  display:inline-block;
-  font-size:1.35rem;
-  font-weight:600;
-  padding:6px 12px;
-  border-radius:10px;
-  background:rgba(255,255,255,0.15);
-  margin-bottom:16px;
-  text-transform:capitalize;
+/* REGNVARNING */
+
+#rain-warning {
+  position: relative;
+  z-index: 7;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  gap: 25px;
+  width: fit-content;
+  max-width: 90%;
+  margin: 45px auto 0;
+  padding: 15px 25px;
+  background: rgba(25, 25, 25, 0.9);
+  border: 2px solid #75bfff;
+  border-radius: 18px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.25);
 }
 
-.day.today{
-  background:rgba(255,255,255,0.25);
+.rain-text {
+  font-size: clamp(18px, 3vw, 28px);
+  font-weight: bold;
+  color: #9bd5ff;
+  text-align: center;
 }
 
-.icon{ width:120px }
-
-.temp{
-  font-size:2.2rem;
-  font-weight:700;
+.umbrella {
+  width: 55px;
+  height: 55px;
+  object-fit: contain;
 }
-
-.desc{ font-size:1.2rem }
-
-/* REGN */
-#rain-warning{
-  margin-top:36px;
-  display:none;
-  align-items:center;
-  gap:36px;
-}
-
-.rain-text{
-  font-size:2.6rem;
-  font-weight:900;
-  background: rgba(0,0,0,0.75);
-  padding:20px 34px;
-  border-radius:20px;
-}
-
-.umbrella{ width:120px }
-.umbrella.left{ transform:scaleX(-1) }
 
 /* MIKU */
-.miku{
-  position:fixed;
-  bottom:18px;
-  z-index:10;
-  display:flex;
-  flex-direction:column-reverse;
-  align-items:center;
-  pointer-events:none;
-  opacity:0;
-  transition:opacity 0.4s;
+
+.miku {
+  position: fixed;
+  bottom: 0;
+  z-index: 8;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  pointer-events: none;
+  opacity: 0;
+  transition:
+    transform 0.8s ease,
+    opacity 0.8s ease;
 }
 
-.miku-left{ left:36px }
-.miku-right{ right:36px }
-
-.miku img{ width:180px }
-
-.miku .speech{
-  background: rgba(0,0,0,0.8);
-  padding:10px 16px;
-  border-radius:16px;
-  margin-bottom:10px;
-  font-size:1.1rem;
-  opacity:0;
-  transition:opacity 0.4s;
-  white-space:nowrap;
+.miku img {
+  display: block;
+  width: 205px;
+  max-height: 300px;
+  object-fit: contain;
+  object-position: bottom;
 }
 
-.miku.show{ opacity:1 }
-.miku.show .speech{ opacity:1 }
-/* ===== STORA SKÄRMAR (skol-displayer) ===== */
-@media (min-width: 1800px) {
+.miku-left {
+  left: clamp(20px, 4vw, 50px);
+  transform: translateX(-350px);
+}
 
-  .grid{
-    max-width:1800px;
+.miku-right {
+  right: clamp(20px, 4vw, 50px);
+  transform: translateX(350px);
+}
+
+.miku-left.show,
+.miku-right.show {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* PRATBUBBLOR */
+
+.speech {
+  position: relative;
+  max-width: 250px;
+  margin-bottom: 12px;
+  padding: 13px 18px;
+  color: #222222;
+  background: white;
+  border-radius: 18px;
+  font-size: 17px;
+  font-weight: bold;
+  text-align: center;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.25);
+}
+
+.speech::after {
+  content: "";
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 11px 10px 0;
+  border-style: solid;
+  border-color: white transparent transparent;
+}
+
+/* MOBILANPASSNING */
+
+@media (max-width: 800px) {
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: 95%;
   }
 
-  .day{
-    font-size:1.6rem;
+  #main-header {
+    padding-bottom: 65px;
   }
 
-  .temp{
-    font-size:2.6rem;
+  .credit {
+    right: 10px;
+    bottom: 7px;
+    gap: 3px;
+    font-size: 10px;
   }
 
-  .desc{
-    font-size:1.4rem;
+  .credit-name,
+  .credit-discord {
+    padding: 3px 6px;
   }
 
-  .icon{
-    width:135px;
+  .credit-name strong,
+  .credit-discord strong {
+    font-size: 11px;
   }
 
-  /* MIKU */
-  .miku img{
-    width:400px;
+  .miku-left {
+    left: 20px;
   }
 
-  .miku .speech{
-    font-size:1.4rem;
-    padding:20px 32px;
+  .miku-right {
+    right: 20px;
+  }
+
+  .miku img {
+    width: 145px;
+    max-height: 210px;
+  }
+
+  .speech {
+    max-width: 175px;
+    font-size: 14px;
+  }
+
+  main {
+    padding-bottom: 200px;
+  }
+}
+
+@media (max-width: 420px) {
+  .grid {
+    gap: 10px;
+  }
+
+  .card {
+    min-height: 200px;
+    padding: 15px 8px;
+  }
+
+  .miku-left {
+    left: 10px;
+  }
+
+  .miku-right {
+    right: 10px;
+  }
+
+  .miku img {
+    width: 110px;
+    max-height: 180px;
+  }
+
+  .speech {
+    max-width: 135px;
+    font-size: 12px;
+    padding: 10px 12px;
   }
 }

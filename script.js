@@ -1,18 +1,30 @@
 const lat = 59.3293;
 const lon = 18.0686;
-const updateIntervalMs = 10 * 60 * 1000; // 10 min
+
+const updateIntervalMs = 10 * 60 * 1000;
+
+
+/* =========================
+   HÄMTA ELEMENT
+========================= */
 
 const weekContainer = document.getElementById("week-forecast");
 const updatedEl = document.getElementById("updated");
 const rainWarningEl = document.getElementById("rain-warning");
+const snowLayer = document.getElementById("snow-layer");
+
 const mikuLeft = document.querySelector(".miku-left");
 const mikuRight = document.querySelector(".miku-right");
 
-/* =========================
-   SMHI - NYA API
-========================= */
-async function fetchSMHI() {
+const leftSpeech = mikuLeft.querySelector(".speech");
+const rightSpeech = mikuRight.querySelector(".speech");
 
+
+/* =========================
+   SMHI API
+========================= */
+
+async function fetchSMHI() {
   const url =
     `https://opendata-download-metfcst.smhi.se/api/category/snow1g/version/1/geotype/point/lon/${lon}/lat/${lat}/data.json`;
 
@@ -25,12 +37,32 @@ async function fetchSMHI() {
   return await res.json();
 }
 
+
+/* =========================
+   VÄDERKODER
+========================= */
+
+function isSnow(code) {
+  return code >= 21 && code <= 27;
+}
+
+function isRain(code) {
+  return code >= 8 && code <= 14;
+}
+
+function isSleet(code) {
+  return code >= 15 && code <= 20;
+}
+
+
 /* =========================
    VÄDERTEXT
 ========================= */
-function weatherText(code) {
 
-  if (code === 1) return "Soligt";
+function weatherText(code) {
+  if (code === 1) {
+    return "Soligt";
+  }
 
   if (code >= 2 && code <= 6) {
     return "Molnigt";
@@ -40,27 +72,32 @@ function weatherText(code) {
     return "Dimmigt";
   }
 
-  if (code >= 8 && code <= 10) {
+  if (isRain(code)) {
     return "Regn";
   }
 
-  if (code >= 13) {
+  if (isSleet(code)) {
+    return "Snöblandat";
+  }
+
+  if (isSnow(code)) {
     return "Snö";
   }
 
-  return "";
+  return "Okänt";
 }
 
-/* =========================
-   IKONER
-========================= */
-function weatherIcon(code) {
 
-  if (code >= 13) {
+/* =========================
+   VÄDERIKONER
+========================= */
+
+function weatherIcon(code) {
+  if (isSnow(code) || isSleet(code)) {
     return "Väderläget/Snöar.png";
   }
 
-  if (code >= 8) {
+  if (isRain(code)) {
     return "Väderläget/regnar.gif";
   }
 
@@ -75,13 +112,26 @@ function weatherIcon(code) {
   return "Väderläget/Molnigt.png";
 }
 
+
+/* =========================
+   DATUM
+========================= */
+
+function getDateKey(date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
+}
+
+
 /* =========================
    KLOCKA
 ========================= */
+
 function startClock() {
-
   function updateClock() {
-
     const now = new Date();
 
     const dateText = now.toLocaleDateString("sv-SE", {
@@ -99,68 +149,159 @@ function startClock() {
   }
 
   updateClock();
-
   setInterval(updateClock, 60000);
 }
+
+
+/* =========================
+   SNÖEFFEKT
+========================= */
+
+function createSnow() {
+  snowLayer.innerHTML = "";
+
+  for (let i = 0; i < 30; i++) {
+    const flake = document.createElement("span");
+
+    flake.className = "snowflake";
+    flake.textContent = "❄";
+
+    flake.style.left = Math.random() * 100 + "%";
+
+    flake.style.animationDuration =
+      (7 + Math.random() * 8) + "s";
+
+    flake.style.animationDelay =
+      (-Math.random() * 12) + "s";
+
+    flake.style.fontSize =
+      (12 + Math.random() * 15) + "px";
+
+    flake.style.opacity =
+      (0.4 + Math.random() * 0.6);
+
+    snowLayer.appendChild(flake);
+  }
+}
+
+
+function setSnowEffect(enabled) {
+  snowLayer.style.display = enabled ? "block" : "none";
+
+  if (enabled && snowLayer.children.length === 0) {
+    createSnow();
+  }
+}
+
+
+/* =========================
+   VINTERLÄGE OCH MIKU
+========================= */
+
+function updateWinterMode(todayItems) {
+  const now = new Date();
+
+  const futureItems = todayItems.filter(item => {
+    return new Date(item.time) >= now;
+  });
+
+  const itemsToCheck =
+    futureItems.length > 0 ? futureItems : todayItems;
+
+  const snowing = itemsToCheck.some(item =>
+    isSnow(Number(item.data.symbol_code))
+  );
+
+  const raining = itemsToCheck.some(item =>
+    isRain(Number(item.data.symbol_code))
+  );
+
+  setSnowEffect(snowing);
+
+  const showRainWarning = raining && !snowing;
+
+  rainWarningEl.style.display =
+    showRainWarning ? "flex" : "none";
+
+  mikuLeft.style.display =
+    showRainWarning ? "none" : "flex";
+
+  mikuRight.style.display =
+    showRainWarning ? "none" : "flex";
+
+  const isDecember = now.getMonth() === 11;
+
+  if (snowing) {
+    leftSpeech.textContent = isDecember
+      ? "JULSNÖ! 🎄❄"
+      : "Det snöar idag! ❄";
+
+  } else if (isDecember) {
+    leftSpeech.textContent = "God jul! 🎄";
+
+  } else if (raining) {
+    leftSpeech.textContent = "Oj, det regnar!";
+
+  } else {
+    leftSpeech.textContent = "Kolla vädret!";
+  }
+
+  rightSpeech.textContent = "Its tiiimeeeee! 🎅";
+}
+
 
 /* =========================
    VECKOPROGNOS
 ========================= */
-function renderWeek(timeSeries) {
 
+function renderWeek(timeSeries) {
   weekContainer.innerHTML = "";
 
   const days = {};
-  const today = new Date();
+  const todayKey = getDateKey(new Date());
 
   timeSeries.forEach(item => {
+    const date = new Date(item.time);
 
-    const d = new Date(item.time);
+    if (isNaN(date.getTime())) {
+      return;
+    }
 
-    const weekday = d.getDay();
+    const weekday = date.getDay();
 
-    // Hoppa över helg
     if (weekday === 0 || weekday === 6) {
       return;
     }
 
-    const key = d.toISOString().split("T")[0];
+    const key = getDateKey(date);
 
-    // Bara första prognosen för varje dag
     if (!days[key]) {
-      days[key] = item;
+      days[key] = [];
     }
+
+    days[key].push(item);
   });
 
-  Object.values(days)
-    .slice(0, 5)
-    .forEach((day, index) => {
+  const todayItems = days[todayKey] || [];
 
+  updateWinterMode(todayItems);
+
+  Object.entries(days)
+    .slice(0, 5)
+    .forEach(([key, items]) => {
+      const day = items[0];
       const date = new Date(day.time);
 
-      const isToday =
-        date.getDate() === today.getDate() &&
-        date.getMonth() === today.getMonth() &&
-        date.getFullYear() === today.getFullYear();
+      const isToday = key === todayKey;
 
-      // NYA SMHI FORMATET
-      const temp = Math.round(day.data.air_temperature);
-      const code = day.data.symbol_code;
+      const tempValue = Number(day.data.air_temperature);
 
-      /* REGN */
-      if (index === 0) {
+      const temp =
+        Number.isFinite(tempValue) && tempValue !== 9999
+          ? Math.round(tempValue)
+          : "--";
 
-        const raining = code >= 8 && code <= 10;
-
-        rainWarningEl.style.display =
-          raining ? "flex" : "none";
-
-        mikuLeft.style.display =
-          raining ? "none" : "flex";
-
-        mikuRight.style.display =
-          raining ? "none" : "flex";
-      }
+      const code = Number(day.data.symbol_code);
 
       const dayText = isToday
         ? `Idag ${date.getDate()}/${date.getMonth() + 1}`
@@ -177,9 +318,11 @@ function renderWeek(timeSeries) {
           ${dayText}
         </div>
 
-        <img class="icon"
-             src="${weatherIcon(code)}"
-             alt="väderikon">
+        <img
+          class="icon"
+          src="${weatherIcon(code)}"
+          alt="väderikon"
+        >
 
         <div class="temp">
           ${temp}°C
@@ -194,54 +337,54 @@ function renderWeek(timeSeries) {
     });
 }
 
+
 /* =========================
-   MIKU
+   MIKU-ANIMATION (HÖGER FÖRST, SEDAN VÄNSTER)
 ========================= */
+
 function startMiku() {
-
-  const showLeft = () => {
-
-    mikuLeft.classList.add("show");
-
-    setTimeout(() => {
-      mikuLeft.classList.remove("show");
-    }, 4000);
-  };
-
-  const showRight = () => {
-
+  function showRight() {
     mikuRight.classList.add("show");
 
     setTimeout(() => {
       mikuRight.classList.remove("show");
     }, 5000);
-  };
+  }
+
+  function showLeft() {
+    mikuLeft.classList.add("show");
+
+    setTimeout(() => {
+      mikuLeft.classList.remove("show");
+    }, 4000);
+  }
 
   function cycle() {
+    // Högra Miku (julmiku) visas först
+    showRight();
 
-    showLeft();
-
-    setTimeout(showRight, 5000);
+    // Vänstra Miku visas efter 5 sekunder
+    setTimeout(showLeft, 5000);
   }
 
   cycle();
 
+  // Upprepar hela loopen var 11:e sekund
   setInterval(cycle, 11000);
 }
 
+
 /* =========================
-   UPDATE
+   UPPDATERA VÄDER
 ========================= */
+
 async function updateWeather() {
-
   try {
-
     const data = await fetchSMHI();
 
     renderWeek(data.timeSeries);
 
   } catch (err) {
-
     console.error(err);
 
     updatedEl.textContent =
@@ -249,13 +392,13 @@ async function updateWeather() {
   }
 }
 
+
 /* =========================
-   INIT
+   STARTA SIDAN
 ========================= */
+
 async function init() {
-
   startClock();
-
   startMiku();
 
   await updateWeather();

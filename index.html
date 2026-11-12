@@ -1,50 +1,65 @@
 <!DOCTYPE html>
 <html lang="sv">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Skolväder</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-<header id="main-header">
-  <div id="header-box">
-    <h1>Väder i Stockholm</h1>
-    <p id="updated">--:--</p>
-  </div>
-  <div class="credit">
-    Skapad av Amir Rezai (TE23A)<br>
-    Discord: maximum_amir
-  </div>
-</header>
+  <header id="main-header">
+    <div id="header-box">
+      <h1>Väder i Stockholm</h1>
+      <p id="updated">--:--</p>
+    </div>
 
-<main>
+    <div class="credit">
+      <div class="credit-name">
+        Skapad av <strong>Amir Rezai</strong> (TE23A)
+      </div>
+      <div class="credit-discord">
+        Discord: <strong>maximum_amir</strong>
+      </div>
+    </div>
+  </header>
 
-  <!-- Prognoser -->
-  <section id="week-forecast" class="grid"></section>
+  <main>
+    <div id="snow-layer"></div>
 
-  <!-- REGN-VARNING -->
-  <div id="rain-warning">
-    <img src="Väderläget/paraply vänster.png" class="umbrella left">
-    <div class="rain-text">TA MED PARAPLY!</div>
-    <img src="Väderläget/paraply höger.png" class="umbrella right">
-  </div>
+    <section id="week-forecast" class="grid"></section>
 
-  <!-- MIKU -->
-  <div class="miku miku-left">
-    <img src="Väderläget/miku pratar.png">
-    <div class="speech">Kolla vädret!</div>
-  </div>
+    <div id="rain-warning">
+      <img
+        src="Väderläget/paraply vänster.png"
+        class="umbrella left"
+        alt=""
+      >
 
-  <div class="miku miku-right">
-    <img src="Väderläget/miku pratar 2.png">
-    <div class="speech">Sommaren kommer snart!</div>
-  </div>
+      <div class="rain-text">TA MED PARAPLY!</div>
 
-</main>
+      <img
+        src="Väderläget/paraply höger.png"
+        class="umbrella right"
+        alt=""
+      >
+    </div>
 
-<script src="script.js"></script>
+    <!-- Miku till vänster -->
+    <div class="miku miku-left">
+      <div class="speech">Kolla vädret!</div>
+      <img src="Väderläget/miku pratar.png" alt="Miku">
+    </div>
+
+    <!-- Miku till höger -->
+    <div class="miku miku-right">
+      <div class="speech">Its tiiimeeeee! 🎅</div>
+      <img src="Väderläget/miku jul.png" alt="Miku i julkläder">
+    </div>
+  </main>
+
+  <script src="script.js"></script>
+
 </body>
 </html>
